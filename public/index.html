@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/js/lib/cv_helper.js" async></script>
+    <script src="/ui/scripts.js" async></script>
+    <script src="/js/lib/ui_helper.js" async></script>
+    <script src="/js/lib/logger.js"></script>
+    <script src="/js/lib/pieces.js"></script>
+    <script src="/js/classes.js"></script>
+    <script src="/js/index.js" type="module" defer></script>
+    <link rel="stylesheet" href="/css/style.css" async />
+    <title>Document</title>
+  </head>
+  <body class="w-screen h-screen">
+    <div class="w-full h-full bg-zinc-900" id="mainWrapper">
+      <div
+        id="header"
+        class="select-none absolute w-full z-20 p-8 flex justify-center items-center"
+      >
+        <div class="flex flex-col justify-center items-center">
+          <h1 id="heading" class="text-zinc-200 text-[7.5vmin]">BLOCK BLAST</h1>
+          <div
+            class="mt-4 justify-center items-center text-white hidden"
+            id="timer"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke-width="1.5"
+              stroke="currentColor"
+              class="size-8"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+              />
+            </svg>
+            <div class="w-32 pl-3">
+              <p class="ml-4">
+                <span id="timerMinutes">0</span>:<span id="timerSeconds"
+                  >00</span
+                >:<span id="timerMilliseconds">00</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="gameWrapper" class="hidden">
+        <canvas id="game" class="absolute z-10 h-[100%] w-full bottom-0"
+          >Your browser does not support canvas elements.</canvas
+        >
+        <button
+          id="back-button"
+          class="select-none bg-zinc-700 p-4 rounded-lg text-zinc-200 text-2xl absolute bottom-8 left-8 z-10"
+        >
+          Back
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

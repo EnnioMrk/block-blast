@@ -84,6 +84,12 @@ class uih_manager {
                 //config
                 if (page_config.heading) {
                     this.heading = document.getElementById(page_config.heading);
+                    if (!this.heading) {
+                        log.error('Heading not found', {
+                            id: page_config.heading,
+                        });
+                        return;
+                    }
                     this.default_heading = this.heading.textContent;
                 }
                 return;

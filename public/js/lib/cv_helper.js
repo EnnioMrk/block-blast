@@ -587,7 +587,11 @@ class cvh_object_manager {
         });
     }
     draw_objects() {
-        this.objects.forEach((o) => o.draw(this.ctx));
+        this.objects.forEach((o) => {
+            if (o.shouldRender !== false) {
+                o.draw(this.ctx);
+            }
+        });
     }
     set color(color) {
         this.ctx.fillStyle = color;
@@ -615,5 +619,98 @@ class cvh_object_manager {
             }
             return (a.z || 0) - (b.z || 0);
         });
+    }
+}
+
+class cvh_grid extends cvh_object {
+    static dummy = cvh_object.derived.push(this);
+    constructor(om, x, y, rows, cols, cellSize, opt) {
+        if (!rows || !cols || !cellSize) {
+            throw new Error('Invalid grid parameters specified.');
+        }
+        super(om, x, y, opt);
+        this._rows = rows;
+        this._cols = cols;
+        this._cellSize = cellSize;
+        this.cells = [];
+        this.initGrid();
+    }
+
+    get rows() {
+        return typeof this._rows === 'function' ? this._rows() : this._rows;
+    }
+
+    set rows(value) {
+        this._rows = value;
+        this.initGrid();
+    }
+
+    get cols() {
+        return typeof this._cols === 'function' ? this._cols() : this._cols;
+    }
+
+    set cols(value) {
+        this._cols = value;
+        this.initGrid();
+    }
+
+    get cellSize() {
+        return typeof this._cellSize === 'function' ? this._cellSize() : this._cellSize;
+    }
+
+    set cellSize(value) {
+        this._cellSize = value;
+        this.initGrid();
+    }
+
+    initGrid() {
+        this.cells = [];
+        for (let row = 0; row < this.rows; row++) {
+            this.cells[row] = [];
+            for (let col = 0; col < this.cols; col++) {
+                const cellX = this.x + col * this.cellSize;
+                const cellY = this.y + row * this.cellSize;
+                this.cells[row][col] = this.om.create.rectangle(
+                    cellX,
+                    cellY,
+                    this.cellSize,
+                    this.cellSize,
+                    {
+                        fill: '#fff',
+                        border: { color: '#000', width: 1 },
+                        gridPosition: { row, col }
+                    }
+                );
+            }
+        }
+    }
+
+    getCell(row, col) {
+        if (row >= 0 && row < this.rows && col >= 0 && col < this.cols) {
+            return this.cells[row][col];
+        }
+        return null;
+    }
+
+    getCellAtPosition(x, y) {
+        const canvasRect = this.om.game.canvas.getBoundingClientRect();
+        const scaleX = this.om.game.canvas.width / canvasRect.width;
+        const scaleY = this.om.game.canvas.height / canvasRect.height;
+        const canvasX = (x - canvasRect.left) * scaleX;
+        const canvasY = (y - canvasRect.top) * scaleY;
+
+        const col = Math.floor((canvasX - this.x) / this.cellSize);
+        const row = Math.floor((canvasY - this.y) / this.cellSize);
+
+        return this.getCell(row, col);
+    }
+
+    draw(ctx) {
+        // The grid is drawn automatically through its cells
+    }
+
+    isInBounds(x, y) {
+        const cell = this.getCellAtPosition(x, y);
+        return cell !== null;
     }
 }
